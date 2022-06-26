@@ -1,0 +1,19 @@
+.page__content {
+    margin: 0 auto;
+    padding: 0;
+    padding-top: 45px;
+    padding-bottom: 60px;
+    min-width: 320px;
+    height: 100%;
+    max-width: 880px;
+    box-sizing: border-box;
+  }
+
+  @media screen and (max-width: 560px) {
+    .page__content {
+      padding-top: 28px;
+      padding-bottom: 36px;
+    }
+  }
+
+
