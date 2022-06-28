@@ -47,7 +47,8 @@ function App() {
           name="profile-edit"
           title="Редактировать профиль"
           isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}          
+          onClose={closeAllPopups}
+          buttonText='Сохранить'          
           >
           <label className="popup__field">
             <input
@@ -81,7 +82,8 @@ function App() {
           name="popup_add-element"
           title="Новое место"
           isOpen={isAddPlacePopupOpen}          
-          onClose={closeAllPopups} 
+          onClose={closeAllPopups}
+          buttonText='Создать'  
           >
           <label className="popup__field">
             <input
@@ -113,7 +115,8 @@ function App() {
           name="popup popup_avatar"
           title="Обновить аватар"
           isOpen={isEditAvatarPopupOpen} 
-          onClose={closeAllPopups}          
+          onClose={closeAllPopups}
+          buttonText='Сохранить'           
           >
           <label className="popup__field">
             <input
@@ -134,5 +137,4 @@ function App() {
     </div>    
   );
 }
-
 export default App;

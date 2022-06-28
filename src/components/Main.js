@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import api from '../utils/Api';
 import Card from '../components/Сard';
+import defaultAvatar from '../images/photo-avatar.png';
 
 function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
-  const [userName, setUserName] = useState();
-  const [userDescription, setUserDescription] = useState();
-  const [userAvatar, setUserAvatar] = useState();
-  const [cards, setCards] = useState();
+  const [userName, setUserName] = useState("");
+  const [userDescription, setUserDescription] = useState("");
+  const [userAvatar, setUserAvatar] = useState("");
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
     api.getUserInfo()
@@ -28,12 +29,12 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
     .catch((err) => {
       console.log(`Ошибка: ${err}`)
   })
-  });
+  }, []);
 
   return (
     <main className="content">
         <section className="profile">
-          <img src={userAvatar} alt="Аватар" className="profile__avatar" />
+          <img src={userAvatar || defaultAvatar} alt="Аватар" className="profile__avatar" />
           <div className="profile__avatar-edit-button" onClick={onEditAvatar}></div>
           <div className="profile__profile-info">
             <h1 className="profile__name">{userName}</h1>
@@ -50,5 +51,4 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
     </main>  
   );
 }
-
 export default Main;

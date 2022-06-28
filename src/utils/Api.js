@@ -1,4 +1,3 @@
-import { handleResponse } from '../utils/Utils.js';
 class Api {
   constructor({ baseUrl, headers }) {
     this._baseUrl = baseUrl;
@@ -6,11 +5,18 @@ class Api {
     this._authorization = this._headers.authorization;
   }
 
+  _handleResponse(res) {
+    if (res.ok) {
+      return res.json();      
+    }
+    return Promise.reject(`Ошибка: ${res.status}`)
+  }
+
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       headers: this._headers
     })
-    .then((res)  => handleResponse(res))
+    .then((res)  => this._handleResponse(res))
   }
 
   getUserInfo() {
@@ -18,7 +24,7 @@ class Api {
       method: 'GET',
       headers: this._headers
     })
-    .then((res) => handleResponse(res));
+    .then((res) => this._handleResponse(res));
   }
 
   editProfile(data) {
@@ -31,7 +37,7 @@ class Api {
         avatar: data.avatar
       })
     })
-    .then((res) => handleResponse(res));
+    .then((res) => this._handleResponse(res));
   }
 
   addCard (data) {
@@ -43,7 +49,7 @@ class Api {
         link: data.link
       })
     })
-    .then((res) => handleResponse(res))
+    .then((res) => this._handleResponse(res))
   }
 
   editAvatar(data) {
@@ -54,14 +60,14 @@ class Api {
         avatar: data.avatar
       })
     })
-    .then((res) => handleResponse(res));
+    .then((res) => this._handleResponse(res));
 }
   setLike(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'PUT',
       headers: this._headers
     })
-    .then((res) => handleResponse(res));
+    .then((res) => this._handleResponse(res));
   }
 
   deleteLike(cardId) {
@@ -69,7 +75,7 @@ class Api {
       method: 'DELETE',
       headers: this._headers
     })
-    .then((res) => handleResponse(res));
+    .then((res) => this._handleResponse(res));
   }
 
   deleteIcon(cardId) {
@@ -77,7 +83,7 @@ class Api {
       method: 'DELETE',
       headers: this._headers
     })
-    .then((res) => handleResponse(res));
+    .then((res) => this._handleResponse(res));
   }  
 }
 
@@ -90,7 +96,6 @@ const api = new Api(
     }
   }
 );
-
 export default api;
 
 
