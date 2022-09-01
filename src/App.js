@@ -1,5 +1,8 @@
 import React from 'react';
 import './index.css';
+import { useEffect, useState } from 'react';
+import { CurrentUserContext } from './contexts/CurrentUserContext';
+import api from './utils/Api';
 import Header from './components/Header';
 import Main from './components/Main';
 import Footer from './components/Footer';
@@ -7,10 +10,19 @@ import PopupWithForm from './components/PopupWithForm';
 import ImagePopup from './components/ImagePopup';
 
 function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [selectedCard, setselectedCard] = React.useState({});
+  const [ currentUser, setCurrentUser ] = useState({
+    "name": "",
+    "about": "",
+    "avatar": "",
+    "_id": "",
+    "cohort": ""
+  });
+  const [ cards, setCards ] = useState([]);
+  
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [selectedCard, setselectedCard] = useState({});
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
@@ -31,15 +43,40 @@ function App() {
     setselectedCard({});
   }
 
-  return (    
-    <div className="page">
+  function handleCardLike (card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id)
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+      setCards((state) => state.map((c) => c._id === card._id ? newCard : c))
+    }).catch(err => console.log(err))
+  }
+
+  useEffect(() => {
+    api.getInitialCards()
+    .then((InitialCards) => {
+     setCards(InitialCards);
+     })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`)
+   })
+   }, []);
+
+  useEffect(() => {
+    api.getUserInfo()
+    .then(r => setCurrentUser(r))
+  }, [])
+
+  return (
+    <CurrentUserContext.Provider value={ currentUser }>
+     <div className="page">
       <div className="page__content">      
         <Header />
         <Main
+        cards={cards}
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
         onEditAvatar={handleEditAvatarClick}
         onCardClick={handleCardClick}
+        onCardLike={handleCardLike}
         />
         <Footer />    
 
@@ -133,8 +170,9 @@ function App() {
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
 
-      </div>   
-    </div>    
+        </div>   
+      </div> 
+    </CurrentUserContext.Provider>         
   );
 }
 export default App;
