@@ -33,8 +33,7 @@ class Api {
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
-        about: data.job,
-        avatar: data.avatar
+        about: data.about
       })
     })
     .then((res) => this._handleResponse(res));
@@ -69,8 +68,6 @@ changeLikeCardStatus(cardId, isLiked) {
     headers: this._headers,
   }).then((res) => this._handleResponse(res));
 }
-
-
 
   deleteIcon(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {

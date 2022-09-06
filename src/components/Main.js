@@ -3,7 +3,7 @@ import Card from '../components/Сard';
 import defaultAvatar from '../images/photo-avatar.png';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDeleteClick }) {
+function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete }) {
 
  const currentUser = useContext(CurrentUserContext);
  
@@ -21,7 +21,7 @@ function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onC
         </section>
         <section className="elements">                  
           {cards.map((card) => {
-            return <Card cardData={card} key={card._id} onCardClick={onCardClick} onCardLike={onCardLike} onCardDeleteClick={onCardDeleteClick}/>
+            return <Card cardData={card} key={card._id} onCardClick={onCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete}/>
           })}
         </section>
     </main>  
