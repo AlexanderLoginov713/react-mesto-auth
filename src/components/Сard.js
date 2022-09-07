@@ -3,7 +3,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 function Card({ cardData, onCardClick, onCardLike, onCardDelete }) {
   
   const currentUser = useContext(CurrentUserContext);
-  const { name, link, likes, owner, _id: cardId } = cardData;
+  const { name, link, likes, owner } = cardData;
   
   const isOwn = owner._id === currentUser._id
   const cardDeleteButtonClassName = (
@@ -16,7 +16,7 @@ function Card({ cardData, onCardClick, onCardLike, onCardDelete }) {
   return (
     <div className="element-template">
       <article className="element">
-        <button type="button" className={cardDeleteButtonClassName} onClick={() => onCardDelete(cardId)}></button>
+        <button type="button" className={cardDeleteButtonClassName} onClick={() => onCardDelete(cardData)}></button>
         <img src={link} alt={name} className="element__image" onClick={() => onCardClick(cardData)}/>        
         <div className="element__description">
           <h2 className="element__title">{name}</h2>

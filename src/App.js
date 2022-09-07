@@ -41,8 +41,8 @@ function App() {
   useEffect(() => {
     api.getInitialCards()
     .then((InitialCards) => {
-     setCards(InitialCards);
-     })
+      setCards(InitialCards);
+    })
     .catch((err) => {
       console.log(`Ошибка: ${err}`)
    })
@@ -62,9 +62,11 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id).then(() => {
+    api.deleteIcon(card._id)
+    .then(() => {
       setCards((state) => state.filter((item) => item._id !== card._id));
-    }).catch(err => console.log(`Ошибка: ${err}`));
+    })
+    .catch(err => console.log(`Ошибка: ${err}`));
   } 
       
   function handleUpdateUser(data) {
@@ -91,8 +93,7 @@ function App() {
     })
     .catch(err => console.log(`Ошибка: ${err}`));
     closeAllPopups();
-  }
-  
+  }  
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
