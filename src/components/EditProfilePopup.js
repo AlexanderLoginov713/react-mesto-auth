@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import PopupWithForm from './PopupWithForm';
 
-function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
-  
+function EditProfilePopup({ isLoading, isOpen, onClose, onUpdateUser }) {
+
   const currentUser = useContext(CurrentUserContext);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -13,31 +13,32 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     setDescription(currentUser.about);
   }, [currentUser, isOpen]);
 
-function handleNameChange(event) {
-  setName(event.target.value);  
-}
+  function handleNameChange(event) {
+    setName(event.target.value);
+  }
 
-function handleDescriptionChange (event) {
-  setDescription(event.target.value);
-}
+  function handleDescriptionChange(event) {
+    setDescription(event.target.value);
+  }
 
-function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     onUpdateUser({
       name,
       about: description,
     });
-}
-  
+  }
+
   return (
     <PopupWithForm
       name="profile-edit"
       title="Редактировать профиль"
-      buttonText="Сохранить"
+
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      >
+      buttonText={isLoading ? 'Сохранение...' : 'Сохранить'}
+    >
       <label className="popup__field">
         <input
           type="text"
@@ -69,7 +70,6 @@ function handleSubmit(e) {
         <span id="job-card-error" className="error"></span>
       </label>
     </PopupWithForm>
-  )}
-  
-
+  )
+}
 export default EditProfilePopup;
