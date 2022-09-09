@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
-function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
+function AddPlacePopup({ isLoading, isOpen, onClose, onAddPlace }) {
   const [cardName, setCardName] = useState('');
   const [cardLink, setCardLink] = useState('');
 
@@ -27,7 +27,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       title="Новое место"
       isOpen={isOpen}
       onClose={onClose}
-      buttonText='Создать'
+      buttonText={isLoading ? 'Создание...' : 'Создать'}
       onSubmit={handleSubmit}
     >
       <label className="popup__field">
@@ -41,6 +41,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
           maxLength="30"
           required
           onChange={handleCardNameChange}
+          value={cardName}
         />
         <span id="addPlaceName-card-error" className="error"></span>
       </label>
@@ -53,6 +54,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
           placeholder="Ссылка на картинку"
           required
           onChange={handleCardLinkChange}
+          value={cardLink}
         />
         <span id="job-card-error" className="error"></span>
       </label>

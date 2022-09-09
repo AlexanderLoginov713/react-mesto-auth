@@ -114,12 +114,16 @@ function App() {
 
   }
   function handleAddPlaceSubmit(card) {
+    setIsLoading(true);
     api.addCard(card)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch(err => console.log(`Ошибка: ${err}`));
+      .catch(err => console.log(`Ошибка: ${err}`))
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (
@@ -153,7 +157,8 @@ function App() {
           <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit} />
+            onAddPlace={handleAddPlaceSubmit}
+            isLoading={isLoading} />
 
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 

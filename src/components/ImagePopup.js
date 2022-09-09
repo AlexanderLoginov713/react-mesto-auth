@@ -4,8 +4,7 @@ function ImagePopup({ card, onClose }) {
       <div className="popup__image-container">
         <button
           type="button"
-          className="popup__close-button popup__close-button_view-image"
-          onClick={onClose}>
+          className="popup__close-button popup__close-button_view-image">
         </button>
         <img
           src={card.link}
