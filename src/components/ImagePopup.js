@@ -1,4 +1,4 @@
-function ImagePopup({ card, onClose }) {
+function ImagePopup({ card }) {
   return (
     <div className={card.link ? "popup popup_view-image popup_opened" : "popup popup_view-image"}>
       <div className="popup__image-container">
@@ -9,8 +9,7 @@ function ImagePopup({ card, onClose }) {
         <img
           src={card.link}
           alt={card.name}
-          className="popup__image"
-          onClick={onClose} />
+          className="popup__image" />
         <h2 className="popup__image-title">{card.name}</h2>
       </div>
     </div>
