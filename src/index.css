@@ -48,6 +48,13 @@
 @import url(./blocks/popup/__field/popup__field.css);
 @import url(./blocks/popup/_avatar/popup_avatar.css);
 
+@import url(./blocks/auth/auth.css);
+@import url(./blocks/auth/__form/auth__form.css);
+@import url(./blocks/auth/__title/auth__title.css);
+@import url(./blocks/auth/__input/auth__input.css);
+@import url(./blocks/auth/__submit-button/auth__submit-button.css);
+@import url(./blocks/auth/__signup/auth__signup.css);
+
 
 
 

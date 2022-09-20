@@ -9,6 +9,10 @@ import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import ProtectedRoute from './ProtectedRoute';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import Login from './Login';
+import Register from './Register';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -97,7 +101,6 @@ function App() {
       .finally(() => {
         setIsLoading(false);
       });
-
   }
 
   function handleUpdateAvatar(data) {
@@ -131,15 +134,28 @@ function App() {
       <div className="page">
         <div className="page__content">
           <Header />
-          <Main
-            cards={cards}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
-          />
+          <Switch>
+            <ProtectedRoute
+              exact
+              component={Main}
+              path="/"
+              cards={cards}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
+            <Route path="/sign-in">
+              <Login />
+            </Route>
+            <Route path="/sign-up">
+              <Register />
+            </Route>
+            <Route path="/">
+            </Route>
+          </Switch>
           <Footer />
 
           <EditProfilePopup
