@@ -7,7 +7,7 @@ function Main({ cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, onC
 
   const currentUser = useContext(CurrentUserContext);
   return (
-    <main className="content">
+    <main className="container">
       <section className="profile">
         <img
           src={currentUser.avatar || defaultAvatar}

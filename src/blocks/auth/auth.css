@@ -1,8 +1,5 @@
 .auth {
   margin: 0 auto;
-  padding: 0;
-  max-width: 1280px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding-top: 20px;
+  max-width: 358px; 
 }

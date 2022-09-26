@@ -1,5 +1,4 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import api from '../utils/Api';
 import Header from './Header';
@@ -10,9 +9,11 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ProtectedRoute from './ProtectedRoute';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, useHistory, Redirect } from 'react-router-dom';
 import Login from './Login';
 import Register from './Register';
+import * as auth from '../utils/auth';
+import logo from '../images/header-logo-mesto.svg';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -22,6 +23,9 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setselectedCard] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({});
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
@@ -129,11 +133,116 @@ function App() {
       });
   }
 
+  const onRegister = ({ password, email }) => {
+    return auth.register(password, email)
+      .then((res) => {
+        if (res.data) {
+          //setErrorMessage('');
+          history.push('/sign-in');
+        } else {
+          //setErrorMessage(res.error);
+          //setIsInfoTooltipOpen(true);
+        }
+        //setIsInfoTooltipOpen(true);
+      })
+      .catch(err => {
+        console.log(`Ошибка: ${err}`)
+        //setErrorMessage(err);
+        //setIsInfoTooltipOpen(true);
+      });
+  }
+
+  const onLogin = ({ password, email }) => {
+    if (password && email) {
+      return auth.login(password, email)
+        .then((data) => {
+          if (data.token) {
+            localStorage.setItem('jwt', data.token);
+            setLoggedIn(true);
+            history.push('/');
+          } else {
+            //setErrorMessage(data.error);
+            //setIsInfoTooltipOpen(true);
+          }
+        })
+        .catch(err => {
+          //setErrorMessage(err);
+          //setIsInfoTooltipOpen(true);
+        });
+    }
+  }
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth.getContent(jwt)
+        .then((res) => {
+          if (res) {
+            authorize(jwt);
+          } else {
+            localStorage.removeItem('jwt');
+            history.push('/sign-in');
+          }
+        })
+        .catch(err => console.log(`Ошибка: ${err}`));
+    }
+  }, [history]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      api.getUserInfo()
+        .then((data) => {
+          setCurrentUser(data)
+        })
+        .catch(err => console.log(`Ошибка: ${err}`));
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      api.getInitialCards()
+        .then((data) => {
+          setCards(data)
+        })
+        .catch(err => console.log(`Ошибка: ${err}`));
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      history.push('/');
+    }
+  }, [history, loggedIn])
+
+  const authorize = async (jwt) => {
+    const content = await auth.getContent(jwt).then((res) => {
+      if (res) {
+        setLoggedIn(true);
+        setUserData({
+          id: res.data._id,
+          email: res.data.email
+        });
+      }
+    })
+      .catch(err => console.log(`Ошибка: ${err}`));
+    return content;
+  }
+  const signOut = () => {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+    history.push('/sign-in');
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <div className="page__content">
-          <Header />
+
+          <Header
+            loggedIn={loggedIn}
+            logo={logo}
+            userData={userData}
+            signOut={signOut}
+          />
           <Switch>
             <ProtectedRoute
               exact
@@ -148,12 +257,13 @@ function App() {
               onCardDelete={handleCardDelete}
             />
             <Route path="/sign-in">
-              <Login />
+              <Login onLogin={onLogin} />
             </Route>
             <Route path="/sign-up">
-              <Register />
+              <Register onRegister={onRegister} />
             </Route>
             <Route path="/">
+              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
             </Route>
           </Switch>
           <Footer />
