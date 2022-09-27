@@ -1,6 +1,6 @@
 .auth__input {
   margin: 0;
-  padding: 0 0 13px 0;
+  padding: 13px 0;
   width: 100%;
   border: none;  
   background-color: #000000;
@@ -14,6 +14,10 @@
 
 .auth__input::placeholder {
   color:  #CCCCCC;
+  font-size: 14px;
+  line-height: 1.2;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-weight: 400;
 }
 
 .auth__input:last-of-type {

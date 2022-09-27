@@ -133,6 +133,7 @@ function App() {
       });
   }
 
+
   const onRegister = ({ password, email }) => {
     return auth.register(password, email)
       .then((res) => {
@@ -171,10 +172,26 @@ function App() {
         });
     }
   }
+
+  const authorize = async (jwt) => {
+    const content = await auth.checkToken(jwt)
+      .then((res) => {
+        if (res) {
+          setLoggedIn(true);
+          setUserData({
+            id: res.data._id,
+            email: res.data.email
+          });
+        }
+      })
+      .catch(err => console.log(`Ошибка: ${err}`));
+    return content;
+  }
+
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      auth.getContent(jwt)
+      auth.checkToken(jwt)
         .then((res) => {
           if (res) {
             authorize(jwt);
@@ -213,19 +230,7 @@ function App() {
     }
   }, [history, loggedIn])
 
-  const authorize = async (jwt) => {
-    const content = await auth.getContent(jwt).then((res) => {
-      if (res) {
-        setLoggedIn(true);
-        setUserData({
-          id: res.data._id,
-          email: res.data.email
-        });
-      }
-    })
-      .catch(err => console.log(`Ошибка: ${err}`));
-    return content;
-  }
+
   const signOut = () => {
     localStorage.removeItem('jwt');
     setLoggedIn(false);
@@ -255,6 +260,7 @@ function App() {
               onCardClick={handleCardClick}
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
+              loggedIn={loggedIn}
             />
             <Route path="/sign-in">
               <Login onLogin={onLogin} />
@@ -266,28 +272,31 @@ function App() {
               {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
             </Route>
           </Switch>
-          <Footer />
+          {loggedIn && (
+            <>
+              <Footer />
 
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser}
-            isLoading={isLoading} />
+              <EditProfilePopup
+                isOpen={isEditProfilePopupOpen}
+                onClose={closeAllPopups}
+                onUpdateUser={handleUpdateUser}
+                isLoading={isLoading} />
 
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar}
-            isLoading={isLoading} />
+              <EditAvatarPopup
+                isOpen={isEditAvatarPopupOpen}
+                onClose={closeAllPopups}
+                onUpdateAvatar={handleUpdateAvatar}
+                isLoading={isLoading} />
 
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit}
-            isLoading={isLoading} />
+              <AddPlacePopup
+                isOpen={isAddPlacePopupOpen}
+                onClose={closeAllPopups}
+                onAddPlace={handleAddPlaceSubmit}
+                isLoading={isLoading} />
 
-          <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
+              <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+            </>
+          )}
         </div>
       </div>
     </CurrentUserContext.Provider>

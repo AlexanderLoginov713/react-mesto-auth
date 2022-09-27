@@ -51,7 +51,7 @@ function Register({ onRegister }) {
         </button>
       </form>
       <div className="auth__signup">
-        <h2 className="auth__question">Уже зарегистрированы?</h2>
+        <h2 className="auth__question">Уже зарегистрированы? &nbsp;</h2>
         <Link
           to="/sign-in"
           className="auth__link">
