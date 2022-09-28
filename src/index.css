@@ -50,6 +50,8 @@
 @import url(./blocks/popup/__error-text/_status-error/popup__error-text_status-error.css);
 @import url(./blocks/popup/__field/popup__field.css);
 @import url(./blocks/popup/_avatar/popup_avatar.css);
+@import url(./blocks/popup/__reg-result/popup__reg-result.css);
+@import url(./blocks/popup/__reg-message/popup__reg-message.css);
 
 @import url(./blocks/auth/auth.css);
 @import url(./blocks/auth/__form/auth__form.css);

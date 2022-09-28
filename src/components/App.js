@@ -14,6 +14,7 @@ import Login from './Login';
 import Register from './Register';
 import * as auth from '../utils/auth';
 import logo from '../images/header-logo-mesto.svg';
+import InfoTooltip from './InfoTooltip';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -26,6 +27,8 @@ function App() {
   const history = useHistory();
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState({});
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
@@ -43,6 +46,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsInfoTooltipOpen(false);
     setselectedCard({});
   }
 
@@ -118,8 +122,8 @@ function App() {
       .finally(() => {
         setIsLoading(false);
       });
-
   }
+
   function handleAddPlaceSubmit(card) {
     setIsLoading(true);
     api.addCard(card)
@@ -133,23 +137,22 @@ function App() {
       });
   }
 
-
   const onRegister = ({ password, email }) => {
     return auth.register(password, email)
       .then((res) => {
         if (res.data) {
-          //setErrorMessage('');
+          setErrorMessage('');
           history.push('/sign-in');
         } else {
-          //setErrorMessage(res.error);
-          //setIsInfoTooltipOpen(true);
+          setErrorMessage(res.error);
+          setIsInfoTooltipOpen(true);
         }
-        //setIsInfoTooltipOpen(true);
+        setIsInfoTooltipOpen(true);
       })
       .catch(err => {
         console.log(`Ошибка: ${err}`)
-        //setErrorMessage(err);
-        //setIsInfoTooltipOpen(true);
+        setErrorMessage(err);
+        setIsInfoTooltipOpen(true);
       });
   }
 
@@ -162,13 +165,13 @@ function App() {
             setLoggedIn(true);
             history.push('/');
           } else {
-            //setErrorMessage(data.error);
-            //setIsInfoTooltipOpen(true);
+            setErrorMessage(data.error);
+            setIsInfoTooltipOpen(true);
           }
         })
         .catch(err => {
-          //setErrorMessage(err);
-          //setIsInfoTooltipOpen(true);
+          setErrorMessage(err);
+          setIsInfoTooltipOpen(true);
         });
     }
   }
@@ -230,7 +233,6 @@ function App() {
     }
   }, [history, loggedIn])
 
-
   const signOut = () => {
     localStorage.removeItem('jwt');
     setLoggedIn(false);
@@ -272,31 +274,34 @@ function App() {
               {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
             </Route>
           </Switch>
-          {loggedIn && (
-            <>
-              <Footer />
+          {loggedIn && <Footer />}
 
-              <EditProfilePopup
-                isOpen={isEditProfilePopupOpen}
-                onClose={closeAllPopups}
-                onUpdateUser={handleUpdateUser}
-                isLoading={isLoading} />
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onUpdateUser={handleUpdateUser}
+            isLoading={isLoading} />
 
-              <EditAvatarPopup
-                isOpen={isEditAvatarPopupOpen}
-                onClose={closeAllPopups}
-                onUpdateAvatar={handleUpdateAvatar}
-                isLoading={isLoading} />
+          <EditAvatarPopup
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={handleUpdateAvatar}
+            isLoading={isLoading} />
 
-              <AddPlacePopup
-                isOpen={isAddPlacePopupOpen}
-                onClose={closeAllPopups}
-                onAddPlace={handleAddPlaceSubmit}
-                isLoading={isLoading} />
+          <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onAddPlace={handleAddPlaceSubmit}
+            isLoading={isLoading} />
 
-              <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-            </>
-          )}
+          <ImagePopup
+            card={selectedCard}
+            onClose={closeAllPopups} />
+
+          <InfoTooltip
+            isOpen={isInfoTooltipOpen}
+            onClose={closeAllPopups}
+            errorMessage={errorMessage} />
         </div>
       </div>
     </CurrentUserContext.Provider>
